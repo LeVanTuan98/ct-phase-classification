@@ -1,0 +1,63 @@
+name: "ct-phase-cls-revised_cropping"        # name of this experiment. Used for comet-ml too
+gpu_id: "0"                     # must set as a string, empty means using CPU
+seed: 50
+
+model_params:       # params for generating the
+  in_channels: 15
+  backbone: 'densenet121'
+  pretrained: true
+  pretrained_file: ''
+  #pretrained_file: 'experiments/pretrained/densenet121-a639ec97.pth'
+  bb_freeze: false
+  labels: [0, 1, 2, 3]
+  conv_fc: true
+  fc_bn: true
+  norm_type: 'BatchNorm'
+  global_pool: 'AVG'
+  mish: false
+  attention_map: None
+  embedded_gcn: false
+  wildcat: false
+  use_se: false
+  fc_drop: 0.0
+  lse_gamma: 10.0
+  lamb: 1
+#  params for preprocessing the input image
+  imagenet: true
+  n_crops: 0
+  augmix: false
+  softmax: false
+
+train_params:
+#   root_dir: '/vinbrain/soanduong/00-data/03-CT-liver-segmentation/'
+#   csv_files: '/vinbrain/soanduong/00-data/03-CT-liver-segmentation/csv_4_phase_classification/train_aux_total_revised.csv'
+  root_dir: '../../03-CT-liver-segmentation/'
+  csv_files: '../../03-CT-liver-segmentation/csv_4_phase_classification/train_aux_total_revised.csv'
+  csv_columns: ['revised_ct_liver_cropped', 'phase_name']
+  label_list: ['Non_Contrast', 'Arterial_Phase', 'Venous_Phase', 'Delayed_Phase']
+  input_shape: [224, 224]
+  hu_range: [0, 300]
+  scale_intensity: [0, 1]
+  phase: 'train'
+  n_incremental: 0
+  n_cutoff_imgs: ''
+  train_batch_size: 64
+  infer_batch_size: 1
+  initial_epoch: 0
+  n_epochs: 200
+  num_workers_to_cache: 8
+  num_workers_from_cache: 4
+  early_stop: 20
+  threshold: 0.5    # threshold value for binary classification
+  lr_scheduler: 'step'
+  select_random: False
+  norm_intensity: False
+  delta_slice: 0
+
+optimizer:
+  type: Adam
+  args:
+    lr: 0.0001
+
+loss: CrossEntropyLoss
+
